@@ -1,0 +1,33 @@
+IndexMap vs std::unordered_map vs std::map（u64→u64，-O2 -march=native，中位数）
+==========================================================================
+
+---- N = 1000 ----
+插入           IM     0.01ms | umap     0.02ms (x1.90) | map     0.03ms (x2.45)
+命中查找       IM     0.00ms | umap     0.00ms (x1.60) | map     0.01ms (x2.76)
+未命中查找     IM     0.00ms | umap     0.00ms (x3.18)
+迭代           IM     0.00ms | umap     0.00 (IM 快 x3.76) | map     0.00 (IM 快 x9.25)
+删90%后迭代    IM     0.00ms | umap     0.00 (IM 快 x2.70) | map     0.00 (IM 快 x5.70)
+swap_remove    IM     0.02ms | umap erase     0.03ms (x1.69)
+shift_remove0  IM     0.41ms | umap erase(begin)     0.02ms（IM 为保序 O(n) 代价）
+内存估算       IM    0.1 MB (53 B/元素) | umap    0.0 MB (48 B/元素)
+
+---- N = 100000 ----
+插入           IM     1.63ms | umap     3.94ms (x2.42) | map     7.38ms (x4.54)
+命中查找       IM     0.46ms | umap     1.19ms (x2.60) | map    13.51ms (x29.60)
+未命中查找     IM     0.03ms | umap     0.22ms (x7.99)
+迭代           IM     0.02ms | umap     0.39 (IM 快 x17.73) | map     0.20 (IM 快 x9.29)
+删90%后迭代    IM     0.00ms | umap     0.04 (IM 快 x15.23) | map     0.03 (IM 快 x11.37)
+swap_remove    IM     2.05ms | umap erase     6.61ms (x3.23)
+shift_remove0  IM   212.47ms | umap erase(begin)     0.02ms（IM 为保序 O(n) 代价）
+内存估算       IM    3.4 MB (34 B/元素) | umap    4.9 MB (48 B/元素)
+
+---- N = 1000000 ----
+插入           IM    47.60ms | umap    81.21ms (x1.71) | map    92.93ms (x1.95)
+命中查找       IM    20.30ms | umap    38.25ms (x1.88) | map   587.55ms (x28.94)
+未命中查找     IM     0.49ms | umap     4.48ms (x9.22)
+迭代           IM     0.37ms | umap    14.26 (IM 快 x38.33) | map     4.71 (IM 快 x12.66)
+删90%后迭代    IM     0.03ms | umap     1.87 (IM 快 x60.70) | map     1.28 (IM 快 x41.68)
+swap_remove    IM    61.04ms | umap erase   204.89ms (x3.36)
+内存估算       IM   54.5 MB (54 B/元素) | umap   48.5 MB (48 B/元素)
+
+[sink = 33855219734000]
